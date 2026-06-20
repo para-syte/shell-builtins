@@ -1,8 +1,9 @@
 /*
   basic replica of bash shell
-  to do: need to convert parsed vector into char array to be able to pass into execvp
+  to do: add simple builtins (cd), add tab completion, and add command history
  */
 
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <unistd.h>
@@ -11,9 +12,12 @@
 #include <vector>
 #include <cstring>
 
-// function used to execute commands given
-// right now can only execute first command and not arguments
+// function used to execute commands
 void execCommand(char *cmd, char *ptr[]) {
+  if (strcmp(cmd, "exit") == 0) {
+    exit(EXIT_SUCCESS);
+  }
+    
   pid_t pid = fork();
 
   if (pid < 0) {
@@ -26,7 +30,7 @@ void execCommand(char *cmd, char *ptr[]) {
   waitpid(pid, NULL, 0);
 }
 
-// function used to parse the command initially typed into a vector
+// function used to parse the command into a vector
 std::vector<char*> parseCommand(char *cmd) {
   char *token = std::strtok(cmd, " ");
   std::vector<char *> random_vec;
@@ -48,8 +52,7 @@ int main() {
     std::cout << "> ";
     std::cin.getline(cmd, 128);
     std::vector<char *> parsed_cmd = parseCommand(cmd);
-    // HERE: convert vector to char array
-    auto *ptr = parsed_cmd.data();
+    auto *ptr = parsed_cmd.data(); // converting vect into pointer (char array) to pass to execvp in execCommand
     execCommand(ptr[0], ptr);
   }
 
