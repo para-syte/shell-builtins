@@ -11,9 +11,18 @@
 #include <sys/wait.h>
 #include <vector>
 #include <cstring>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 // function used to execute commands
 void execCommand(char *cmd, char *ptr[]) {
+  if (strcmp(cmd, "cd") == 0) {
+    int ret;
+    ret = chdir(ptr[1]);
+    return;
+  }
+  
   if (strcmp(cmd, "exit") == 0) {
     exit(EXIT_SUCCESS);
   }
@@ -47,9 +56,9 @@ std::vector<char*> parseCommand(char *cmd) {
 
 int main() {
   char *cmd = new char[128];
-  
+    
   while (1) {
-    std::cout << "> ";
+    std::cout << fs::current_path() << " ";
     std::cin.getline(cmd, 128);
     std::vector<char *> parsed_cmd = parseCommand(cmd);
     auto *ptr = parsed_cmd.data(); // converting vect into pointer (char array) to pass to execvp in execCommand
