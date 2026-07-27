@@ -1,6 +1,6 @@
 /*
   basic replica of bash shell
-  to do: add simple builtins (cd), add tab completion, and add command history
+  to do: add tab completion, and add command history
  */
 
 #include <cstdlib>
@@ -17,6 +17,7 @@ namespace fs = std::filesystem;
 
 // function used to execute commands
 void execCommand(char *cmd, char *ptr[]) {
+  // chdir syscall to change directory
   if (strcmp(cmd, "cd") == 0) {
     int ret;
     ret = chdir(ptr[1]);
