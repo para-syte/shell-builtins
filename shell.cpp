@@ -1,5 +1,6 @@
 /*
   basic replica of bash shell
+  *must compile with -lreadline flag*
   to do: add tab completion, and add command history
  */
 
@@ -12,6 +13,8 @@
 #include <vector>
 #include <cstring>
 #include <filesystem>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 namespace fs = std::filesystem;
 
@@ -59,8 +62,9 @@ int main() {
   char *cmd = new char[128];
     
   while (1) {
-    std::cout << fs::current_path() << " ";
-    std::cin.getline(cmd, 128);
+    std::cout << fs::current_path();
+    cmd = readline(" ");
+    add_history(cmd); // history has issues if you try to cycle through them
     std::vector<char *> parsed_cmd = parseCommand(cmd);
     auto *ptr = parsed_cmd.data(); // converting vect into pointer (char array) to pass to execvp in execCommand
     execCommand(ptr[0], ptr);
