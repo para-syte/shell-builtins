@@ -1,7 +1,9 @@
 /*
   basic replica of bash shell
   *must compile with -lreadline flag*
-  to do: add tab completion, and add command history
+  to do: add tab completion, and add command history, fix ls so that if ls a
+file it shows an error saying not a directory. Oh and also create a Makefile
+so I don't have to compile with flags.
  */
 
 #include <cstdlib>
@@ -17,6 +19,10 @@
 #include <readline/history.h>
 
 namespace fs = std::filesystem;
+
+// void initialize_readline() {
+//   rl_bind_key('\t', rl_insert);
+// }
 
 // function used to execute commands
 void execCommand(char *cmd, char *ptr[]) {
@@ -64,7 +70,14 @@ int main() {
   while (1) {
     std::cout << fs::current_path();
     cmd = readline(" ");
-    add_history(cmd); // history has issues if you try to cycle through them
+    if (cmd && *cmd) {
+      add_history(cmd);
+    }
+    
+    // if (rl_bind_key('\t', rl_insert) != 0) {
+    //   std::cout << fs::current_path();
+    // }
+    
     std::vector<char *> parsed_cmd = parseCommand(cmd);
     auto *ptr = parsed_cmd.data(); // converting vect into pointer (char array) to pass to execvp in execCommand
     execCommand(ptr[0], ptr);
